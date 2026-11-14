@@ -1,0 +1,8 @@
+import {useEffect} from 'react';
+import {X,CalendarDays,MapPin,Users} from 'lucide-react';
+import {eventTypes,formatEventDate,type PartyEvent} from '../data/events';
+export default function EventDetailsModal({event,onClose}:{event:PartyEvent;onClose:()=>void}){
+ const config=eventTypes[event.type];
+ useEffect(()=>{const prev=document.activeElement instanceof HTMLElement?document.activeElement:null;const old=document.body.style.overflow;document.body.style.overflow='hidden';const onKey=(e:KeyboardEvent)=>{if(e.key==='Escape')onClose()};window.addEventListener('keydown',onKey);document.getElementById('detail-close')?.focus();return()=>{document.body.style.overflow=old;window.removeEventListener('keydown',onKey);prev?.focus()};},[onClose]);
+ return <div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)onClose()}}><div className="dialog" role="dialog" aria-modal="true" aria-labelledby="details-title"><button className="close" id="detail-close" onClick={onClose} aria-label="Close"><X size={19}/></button><div className="detail-label">{config.label}</div><h2 id="details-title">{event.name}</h2><div className="detail-art" style={{background:config.color}}>{config.emoji}</div><p className="detail-line"><CalendarDays size={18}/>{formatEventDate(event.date,event.time)}</p><p className="detail-line"><MapPin size={18}/>{event.location||'Location TBD'}</p><p className="detail-line"><Users size={18}/>{event.guests} guests</p><p className="detail-description">{event.description||'More exciting details to come!'}</p><p className="note">Guest lists, invitations, and doodle avatars are coming in the next build.</p></div></div>
+}
